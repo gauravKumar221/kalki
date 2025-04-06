@@ -3,27 +3,42 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
 const BlogDetails = () => {
-  const { slug } = useParams(); // 👈 get post ID
+  const { slug } = useParams(); // 👈 get post ID from URL
   const [post, setPost] = useState(null);
 
   useEffect(() => {
+    const cachedPosts = localStorage.getItem('blogPosts');
+    if (cachedPosts) {
+      const parsedPosts = JSON.parse(cachedPosts);
+      const matchedPost = parsedPosts.find((item) => item.id === Number(slug));
+      if (matchedPost) {
+        setPost(matchedPost);
+        return;
+      }
+    }
+
+    // If post not found in cache, fetch from API
     const fetchPost = async () => {
-      const response = await fetch(`https://dummyjson.com/posts/${slug}`);
-      const data = await response.json();
-      setPost(data);
-      console.log(data);
+      try {
+        const response = await fetch(`https://dummyjson.com/posts/${slug}`);
+        const data = await response.json();
+        setPost(data);
+      } catch (err) {
+        console.error('Failed to fetch post:', err);
+      }
     };
+
     fetchPost();
   }, [slug]);
 
   if (!post) return <div className="p-10 text-center">Loading...</div>;
 
   return (
-    <div className="max-w-3xl mx-auto p-10">
+    <div className="container p-4 ">
       <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
       <p className="text-gray-700 text-lg mb-4">{post.body}</p>
 
-      <div className="text-sm text-gray-600 space-y-2 flex gap-2">
+      <div className="text-sm text-gray-600 flex-wrap flex gap-2">
         <p>👤 <span className="font-medium">User ID:</span> {post.userId}</p>
         <p>👁️ <span className="font-medium">Views:</span> {post.views}</p>
         <p>👍 <span className="font-medium">Likes:</span> {post.reactions?.likes}</p>
@@ -40,7 +55,6 @@ const BlogDetails = () => {
         </p>
       </div>
     </div>
-
   );
 };
 
