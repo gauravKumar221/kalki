@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+  import { useParams } from "next/navigation";
 
 const BlogDetails = () => {
   const { slug } = useParams(); // 👈 get post ID from URL

@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "./Components/Header/Header";
 import TheamProvider from "@/Context/TheamContext";
+import StoreCookie from "./Components/Footer/StoreCookie";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,6 +28,7 @@ export default function RootLayout({ children }) {
         <TheamProvider>
           <Header />
           {children}
+          {/* <StoreCookie /> */}
         </TheamProvider>
       </body>
     </html>
